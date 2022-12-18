@@ -185,7 +185,7 @@ with tab2:
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"}, "title": f"Inference ({city_selected})"})
     f2.update_layout(legend=dict(
         yanchor="bottom",
-        y=0.0,
+        y=1.0,
         xanchor="center",
         x=1.0
     ))
