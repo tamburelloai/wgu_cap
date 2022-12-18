@@ -1,3 +1,5 @@
+import os
+
 import torch
 from b_model import LinearRegression
 #os.system('pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu')
@@ -22,7 +24,7 @@ model = Transformer(inpt_features=1,
                     d_model=64,
                     nhead=8,
                     d_hid=64,
-                    nlayers=3).load_state_dict(torch.load('model_state.pt'))
+                    nlayers=3).load_state_dict(torch.load(os.curdir + '/' + 'model_state.pt'))
 
 regressionModel = LinearRegression(24)
 
