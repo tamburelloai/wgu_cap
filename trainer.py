@@ -16,7 +16,7 @@ class TorchTrainer:
         self.criterion = torch.nn.MSELoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), self.alpha)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 1.0, gamma=0.95)
-        self.PATH = 'wgu_cap/app/model_state.pt'
+        self.PATH = '../model_state.pt'
         self.bptt = bptt
         self.device = 'cpu'
 
@@ -28,8 +28,6 @@ class TorchTrainer:
         torch.save(self.model.state_dict(), self.PATH)
 
     def load_model(self):
-        for x in os.listdir():
-            print(x)
         self.model.load_state_dict(torch.load(self.PATH))
 
     def train_model(self, train_data):
