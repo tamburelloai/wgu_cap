@@ -24,7 +24,7 @@ model = Transformer(inpt_features=1,
                     d_model=64,
                     nhead=8,
                     d_hid=64,
-                    nlayers=3).load_state_dict(torch.load('app/wgu_cap/model_state.pt'))
+                    nlayers=3).load_state_dict(torch.load('app/model_state.pt'))
 
 regressionModel = LinearRegression(24)
 
