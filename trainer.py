@@ -1,3 +1,4 @@
+import os
 import time
 import torch.nn
 from matplotlib import pyplot as plt
@@ -26,6 +27,7 @@ class TorchTrainer:
         torch.save(self.model.state_dict(), self.PATH)
 
     def load_model(self):
+        print(os.getcwd())
         self.model.load_state_dict(torch.load(self.PATH))
 
     def train_model(self, train_data):
