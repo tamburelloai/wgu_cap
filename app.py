@@ -195,6 +195,7 @@ with tab2:
     f2.update_layout(template='streamlit')
     
     st.write(tomorrowReg)
+    st.write(len(future), len(tomorrowReg))
     days_ahead = st.select_slider(
         'Forecast Length (Days)',
         options=[1, 2, 3, 4, 5], key='days_ahead')
