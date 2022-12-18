@@ -6,4 +6,3 @@ numpy
 matplotlib
 wwo-hist
 plotly
-wget

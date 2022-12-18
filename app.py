@@ -1,5 +1,4 @@
 import os
-import wget
 import torch
 from b_model import LinearRegression
 #os.system('pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu')
@@ -21,8 +20,6 @@ st.text('A transformer based weather prediction application')
 
 dm = DataManager()
 
-url = "https://github.com/tamburelloai/wgu_cap/blob/main/model_state.pt?raw=true"
-wget.download(url)
 model = Transformer(inpt_features=1,
                     d_model=64,
                     nhead=8,
