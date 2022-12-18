@@ -171,15 +171,15 @@ with tab2:
     f2 = go.Figure(
        data=[
            # actual
-           go.Line(x=past, y=lastWeekActual, name="Last Week (Actual)", line={'dash': 'solid', color='rgba(0, 0, 255, 0.5)'}),
+           go.Line(x=past, y=lastWeekActual, name="Last Week (Actual)", line={'dash': 'solid', color:'rgba(0, 0, 255, 0.5)'}),
 
            #transformer predictions
-           go.Line(x=past, y=lastWeekPrediction, name="Last Week (Prediction)", line={'dash': 'solid',  color='rgba(255, 0, 0, 0.5)'}),
-           go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'solid',  color='rgba(255, 0, 0, 1)'}),
+           go.Line(x=past, y=lastWeekPrediction, name="Last Week (Prediction)", line={'dash': 'solid',  color:'rgba(255, 0, 0, 0.5)'}),
+           go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'solid',  color:'rgba(255, 0, 0, 1)'}),
 
            # linear regression
-           go.Line(x=past, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'solid',  color='rgba(0, 255, 0, 0.5)'}),
-           go.Line(x=future, y=tomorrowReg.reshape(-1), name='Future Forecast (Regression)', line={'dash': 'solid',  color='rgba(0, 255, 0, 1)'})
+           go.Line(x=past, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'solid',  color:'rgba(0, 255, 0, 0.5)'}),
+           go.Line(x=future, y=tomorrowReg.reshape(-1), name='Future Forecast (Regression)', line={'dash': 'solid',  color:'rgba(0, 255, 0, 1)'})
 
        ],
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"}, "title": f"Inference ({city_selected})"})
