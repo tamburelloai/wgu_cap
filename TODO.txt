@@ -1,0 +1,9 @@
+#TODO: get val, test data for each city in train_data in single shot to API
+#TODO: create locationMapping via index of file in train_data and use universally (and inverse)
+
+#TODO: create TorchTrainer class that handles everything for a given dataset once returned from DataManager
+#TODO: such as batching, train iterator, etc.
+
+#TODO: create TorchPred class that handles everything for a given dataset once returned from DataManager
+#TODO: such as batching, performing inference, etc.
+
