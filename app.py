@@ -17,6 +17,8 @@ else:
     st.title('WeatherFormer')
 st.text('A transformer based weather prediction application')
 
+for x in os.listdir():
+    st.write(x + ' ')
 
 dm = DataManager()
 
@@ -24,8 +26,7 @@ model = Transformer(inpt_features=1,
                     d_model=64,
                     nhead=8,
                     d_hid=64,
-                    nlayers=3).load_state_dict(torch.load('model_state.pt'))
-
+                    nlayers=3)
 
 regressionModel = LinearRegression(24)
 
@@ -34,6 +35,7 @@ handler = TorchTrainer(model,
                         bptt=24,
                         alpha=0.0001,
                         num_epochs=1)
+
 
 
 #regressionModel.load_state_dict(torch.load('baseline_state.pt'))

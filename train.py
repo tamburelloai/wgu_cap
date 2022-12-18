@@ -17,9 +17,6 @@ trainer = TorchTrainer(model,
                            alpha=0.00003,
                            num_epochs=1)
 
-train_losses = []
-val_losses = []
-
 for outer_epoch in range(200):
     train_loss = 0
     val_loss = 0
