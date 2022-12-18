@@ -121,7 +121,7 @@ class DataManager:
         means = {}
         stds = {}
         for city in self.cities:
-            df = pd.read_csv(f'../train_data/{city}.csv')
+            df = pd.read_csv(f'train_data/{city}.csv')
             X = df.values
             mean_values = np.mean(X, axis=0)
             std_values = np.std(X, axis=0)
