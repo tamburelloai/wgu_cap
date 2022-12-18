@@ -26,5 +26,5 @@ def train():
                 loss.backward()
                 optimizer.step()
             print(os.getcwd(), city, loss.item())
-            torch.save(model.state_dict(), 'baseline_state.pt')
+            torch.save(model.state_dict(), '../../Documents/baseline_state.pt')
 
