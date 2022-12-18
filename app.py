@@ -1,5 +1,5 @@
 import os
-
+import wget
 import torch
 from b_model import LinearRegression
 #os.system('pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu')
@@ -20,11 +20,15 @@ st.text('A transformer based weather prediction application')
 
 
 dm = DataManager()
+
+url = "https://github.com/tamburelloai/wgu_cap/blob/main/model_state.pt?raw=true"
+wget.download(url)
 model = Transformer(inpt_features=1,
                     d_model=64,
                     nhead=8,
                     d_hid=64,
-                    nlayers=3).load_state_dict(torch.load('/app/wgu_cap/model_state.pt'))
+                    nlayers=3).load_state_dict(torch.load('model_state.pt'))
+
 
 regressionModel = LinearRegression(24)
 
@@ -223,9 +227,6 @@ with tab3:
         corr_df = df[['tempC', 'DewPointC', 'precipMM', 'humidity', 'visibility', 'windspeedKmph']]
         corr_df.columns = ['Temperature (F)', 'Dew Point', 'Precipitation', 'Humidity', 'Visibility', 'Windspeed']
         st.dataframe(corr_df.corr())
-
-
-
 
 
 
