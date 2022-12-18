@@ -32,7 +32,7 @@ handler = TorchTrainer(model,
                         alpha=0.0001,
                         num_epochs=1)
 
-#handler.load_model()
+handler.load_model()
 #regressionModel.load_state_dict(torch.load('baseline_state.pt'))
 
 
