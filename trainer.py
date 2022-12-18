@@ -1,10 +1,6 @@
-import math
 import time
 import torch.nn
 from matplotlib import pyplot as plt
-
-from data_utils.data_manager import DataManager
-from model.transformer import Transformer
 from tensor_utils import TensorUtils
 
 plt.ion()

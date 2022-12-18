@@ -1,11 +1,10 @@
 import os
-import typing
-from typing import List, Dict
+from typing import Dict
 import numpy as np
 import pandas as pd
 import torch
 from wwo_hist import retrieve_hist_data
-from data_utils.torch_ds import TorchDS
+from torch_ds import TorchDS
 
 
 class DataManager:
@@ -16,7 +15,8 @@ class DataManager:
     def getCities(self) -> Dict:
         '''returns list of city names read from cities directory'''
         cities = {}
-        df = pd.read_csv('data_utils/city_indices.csv')
+        #df = pd.read_csv('data_utils/city_indices.csv')
+        df = pd.read_csv('./city_indices.csv')
         for i in range(len(df)):
             cities[df['City'][i]] = i
         return cities
@@ -121,6 +121,7 @@ class DataManager:
         means = {}
         stds = {}
         for city in self.cities:
+            #df = pd.read_csv(f'train_data/{city}.csv')
             df = pd.read_csv(f'train_data/{city}.csv')
             X = df.values
             mean_values = np.mean(X, axis=0)
@@ -158,7 +159,7 @@ class DataManager:
 def _getAllDatasets():
     dm = DataManager()
     retrieved_cities = []
-    for city in os.listdir('../train_data'):
+    for city in os.listdir('train_data'):
         city = city[:-4]
         retrieved_cities.append(city)
 

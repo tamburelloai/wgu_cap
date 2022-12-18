@@ -1,9 +1,4 @@
-import numpy as np
-import torch
-from matplotlib import pyplot as plt
-from torch import Tensor
-
-from data_utils.data_manager import DataManager
+from data_manager import DataManager
 from model.transformer import Transformer
 from trainer import TorchTrainer
 

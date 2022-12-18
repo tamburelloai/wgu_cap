@@ -1,17 +1,19 @@
-import os
-os.system('pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu')
-import streamlit as st
+import torch
+from b_model import LinearRegression
+#os.system('pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu')
 import pandas as pd
 import numpy as np
 import streamlit as st
-from data_utils.data_manager import DataManager
+from data_manager import DataManager
 from model.transformer import Transformer
 from trainer import TorchTrainer
 import plotly.graph_objects as go
-import plotly
 
 # Title
-st.title('WeathFormer')
+if 'city_selected' in st.session_state:
+    st.title(f'WeathFormer ({st.session_state.city_selected})')
+else:
+    st.title('WeatherFormer')
 st.text('A transformer based weather prediction application')
 
 
@@ -22,13 +24,16 @@ model = Transformer(inpt_features=1,
                     d_hid=64,
                     nlayers=3)
 
+regressionModel = LinearRegression(24)
+
 handler = TorchTrainer(model,
                         batch_size=1,
                         bptt=24,
                         alpha=0.0001,
                         num_epochs=1)
 
-#handler.load_model()
+handler.load_model()
+regressionModel.load_state_dict(torch.load('baseline_state.pt'))
 
 
 def getDisplayCities():
@@ -44,40 +49,34 @@ with st.sidebar:
     full_df = dm.getFullDataset(city_selected)
     df = full_df.tail(30*24)
 
-    pieContainer = st.container()
-    with pieContainer:
+    rained = len(full_df[full_df['precipMM'] > 0])
+    all = len(full_df)
+    labelsValues = ['Yes', 'No']
+    fig = go.Figure(
+        data=[go.Pie(labels=labelsValues, values=[rained / all, (all - rained) / all], textinfo='label+percent',
+                     insidetextorientation='radial', showlegend=False,
 
-        st.header(st.session_state.city_selected)
+                     )])
+    fig.update_layout(title='Precipitation (Probability)', width=400, height=400)
 
-
-        labelsValues = list((range(-20, 110, 10)))
-        df['tempF'] = df['tempC']*9/5 + 32
-        rangeValues = full_df.groupby(pd.cut(full_df['tempF'], bins=labelsValues)).size()
-        labelsValues = [str(label)+'s' for label in labelsValues[:-1]]
-
-        fig = go.Figure([go.Bar(x=labelsValues, y=rangeValues.values)])
-        fig.update_layout({'yaxis': {'title': 'Temperature'}})
-        st.plotly_chart(fig)
+    st.plotly_chart(fig)
 
 
-    corrContainer = st.container()
-    with corrContainer:
-        st.subheader("Correlation Matrix")
-        corr_df = df[['tempC', 'DewPointC', 'precipMM', 'humidity', 'visibility', 'windspeedKmph']]
-        corr_df.columns = ['Temperature (F)', 'Dew Point', 'Precipitation', 'Humidity', 'Visibility', 'Windspeed']
-        st.dataframe(corr_df.corr())
-
-
-
-tab1, tab2 = st.tabs(["Historical", "Inference"])
+tab1, tab2, tab3 = st.tabs(["Historical", "Inference", 'Descriptive Statistics'])
 with tab1:
-
+    if 'city_selected' not in st.session_state:
+        st.session_state['city_selected'] = 'chicago'
     X = dm.getHistorical(df)
     yhat = handler.predict_historical(X)
+    yhat_baseline = regressionModel.predict_historical(X)
 
     y = dm.toF(df['tempC'].tolist()[1:])
     yhat = dm.toF(yhat)
+    yhat_baseline = dm.toF(yhat_baseline)
+
+
     xaxis = list(range(0, len(y)))
+
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -98,6 +97,7 @@ with tab1:
        data=[
            go.Line(x=xaxis, y=y, name="actual", line={'dash': 'solid', 'color':'rgba(0, 0, 255, 0.9)'}),
            go.Line(x=xaxis, y=yhat, name="prediction", line={'dash': 'dash', 'color':'rgba(255, 0, 0, 0.7)'}),
+           go.Line(x=xaxis, y=yhat_baseline, name='baseline')
        ],
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"},
                "title": f"Historical ({city_selected})"}
@@ -105,79 +105,124 @@ with tab1:
 
     st.plotly_chart(f1)
 
+
+with tab2:
+    if 'city_selected' not in st.session_state:
+        st.session_state['city_selected'] = 'chicago'
     if 'days_ahead' not in st.session_state:
-        st.session_state['days_ahead'] = 3
-    with tab2:
-        lastWeekActual = dm.getLastWeek(city_selected)
-        lastWeekPrediction = handler.predLastWeek(lastWeekActual)
+        days_ahead = 1
+
+    #actual
+    lastWeekActual = dm.getLastWeek(city_selected)
+
+    #transformer
+    lastWeekPrediction = handler.predLastWeek(lastWeekActual)
+    if 'days_ahead' not in st.session_state:
+        days_ahead = 1
+        tomorrowPred = handler.predTomorrow(lastWeekActual, days=int(days_ahead))
+    else:
         tomorrowPred = handler.predTomorrow(lastWeekActual, days=int(st.session_state.days_ahead))
 
-        lastWeekActual = dm.toF(lastWeekActual)
-        lastWeekPrediction = dm.toF(lastWeekPrediction)
-        tomorrowPred = dm.toF(tomorrowPred)
+
+
+    #regression
+    lastWeekReg = regressionModel.predLastWeek(lastWeekActual)
+    if 'days_ahead' not in st.session_state:
+        days_ahead = 1
+        tomorrowReg = regressionModel.predTomorrow(lastWeekActual, days=int(days_ahead))
+    else:
+        tomorrowReg = regressionModel.predTomorrow(lastWeekActual, days=int(st.session_state.days_ahead))
 
 
 
+    # all to farenheit
+    lastWeekActual = dm.toF(lastWeekActual)
+    lastWeekPrediction = dm.toF(lastWeekPrediction)
+    tomorrowPred = dm.toF(tomorrowPred)
+    lastWeekReg = dm.toF(lastWeekReg)
+    tomorrowReg = dm.toF(tomorrowReg)
 
-        past = list(range(0, len(lastWeekActual)))
-        future = list(range(len(lastWeekActual), len(lastWeekActual) + len(tomorrowPred)))
 
-        col1, col2 = st.columns(2)
-        with col1:
-            label = 'Temperature (F)'
-            value = int(lastWeekActual[-1])
-            delta = None
-            st.metric(label, value, delta=delta, delta_color="normal", help=None)
+    past = list(range(0, len(lastWeekActual)))
+    future = list(range(len(lastWeekActual), len(lastWeekActual) + len(tomorrowPred)))
 
-        with col2:
-            label = 'Forecast (F)'
-            value = int(tomorrowPred[-1].item())
-            delta = f'{round(((tomorrowPred[-1].item() - lastWeekActual[-1]) / tomorrowPred[-1].item()) * 100, 2)} (%)'
-            st.metric(label, value, delta=delta, delta_color="normal", help=None)
+    col1, col2 = st.columns(2)
+    with col1:
+        label = 'Temperature (F)'
+        value = int(lastWeekActual[-1])
+        delta = None
+        st.metric(label, value, delta=delta, delta_color="normal", help=None)
 
-        f2 = go.Figure(
-           data=[
-               go.Line(x=past, y=lastWeekActual, name="Last Week (Actual)", line={'dash': 'solid', 'color': 'blue'}),
-               go.Line(x=past, y=lastWeekPrediction, name="Last Week (Prediction)", line={'dash': 'dash', 'color': 'red'}),
-               go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'dash', 'color': 'pink'})
-           ],
-           layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"}, "title": f"Inference ({city_selected})"})
-        f2.update_layout(legend=dict(
-            yanchor="bottom",
-            y=0.0,
-            xanchor="center",
-            x=1.0
-        ))
-        f2.update_layout(width=800)
-        f2.update_layout(height=500)
+    with col2:
+        label = 'Forecast (F)'
+        value = int(tomorrowPred[-1].item())
+        delta = f'{round(((tomorrowPred[-1].item() - lastWeekActual[-1]) / tomorrowPred[-1].item()) * 100, 2)} (%)'
+        st.metric(label, value, delta=delta, delta_color="normal", help=None)
 
-        f2.update_layout(template='streamlit')
-        st.plotly_chart(f2)
+    f2 = go.Figure(
+       data=[
+           # actual
+           go.Line(x=past, y=lastWeekActual, name="Last Week (Actual)", line={'dash': 'solid', 'color': 'blue'}),
 
-        day_selection = st.select_slider(
-            'Forecast Length (Days)',
-            options=[1, 2, 3, 4, 5], key='days_ahead')
-        st.write(f'{day_selection} day ({int(day_selection) *24})')
+           #transformer predictions
+           go.Line(x=past, y=lastWeekPrediction, name="Last Week (Prediction)", line={'dash': 'dash', 'color': 'red'}),
+           go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'dash', 'color': 'pink'}),
 
-left3, right3 = st.columns(2)
-with left3:
+           # linear regression
+           go.Line(x=future, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'dash', 'color': 'yellow'}),
+           go.Line(x=future, y=tomorrowReg, name='Future Forecast (Regression)', line={'dash': 'dash', 'color': 'yellow'})
+
+       ],
+       layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"}, "title": f"Inference ({city_selected})"})
+    f2.update_layout(legend=dict(
+        yanchor="bottom",
+        y=0.0,
+        xanchor="center",
+        x=1.0
+    ))
+    f2.update_layout(width=800)
+    f2.update_layout(height=500)
+
+    f2.update_layout(template='streamlit')
+
+    days_ahead = st.select_slider(
+        'Forecast Length (Days)',
+        options=[1, 2, 3, 4, 5], key='days_ahead')
+
+    st.plotly_chart(f2)
+
+
+with tab3:
+    if 'city_selected' not in st.session_state:
+        st.session_state['city_selected'] = 'chicago'
+
+    binContainer = st.container()
+    with binContainer:
+        labelsValues = list((range(-20, 110, 10)))
+        df['tempF'] = df['tempC'] * 9 / 5 + 32
+        rangeValues = full_df.groupby(pd.cut(full_df['tempF'], bins=labelsValues)).size()
+        labelsValues = [str(label) + 's' for label in labelsValues[:-1]]
+
+        fig = go.Figure([go.Bar(x=labelsValues, y=rangeValues.values)])
+        fig.update_layout({'yaxis': {'title': 'Temperature'}})
+        st.plotly_chart(fig)
+
+
     st.subheader("Distribution Statistics")
     desc_df = full_df[['tempC', 'DewPointC', 'precipMM', 'humidity', 'visibility', 'windspeedKmph']]
     desc_df.columns = ['Temperature (F)', 'Dew Point', 'Precipitation', 'Humidity', 'Visibility', 'Windspeed']
     st.dataframe(desc_df.describe())
 
-with right3:
-    st.subheader('Precipitation Probability')
-    rained = len(full_df[full_df['precipMM']>0])
-    all = len(full_df)
-    labelsValues = ['Yes', 'No']
-    fig = go.Figure(data=[go.Pie(labels=labelsValues, values=rangeValues, textinfo='label+percent',
-                                 insidetextorientation='radial', showlegend=False,
 
-                                 )])
-    fig.update_layout(width=400, height=400)
 
-    st.plotly_chart(fig)
+    corrContainer = st.container()
+    with corrContainer:
+        st.subheader("Correlation Matrix")
+        corr_df = df[['tempC', 'DewPointC', 'precipMM', 'humidity', 'visibility', 'windspeedKmph']]
+        corr_df.columns = ['Temperature (F)', 'Dew Point', 'Precipitation', 'Humidity', 'Visibility', 'Windspeed']
+        st.dataframe(corr_df.corr())
+
+
 
 
 
