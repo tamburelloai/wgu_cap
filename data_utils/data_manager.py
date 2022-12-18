@@ -16,7 +16,7 @@ class DataManager:
     def getCities(self) -> Dict:
         '''returns list of city names read from cities directory'''
         cities = {}
-        df = pd.read_csv('data_utils/city_indices.csv')
+        df = pd.read_csv('../data_utils/city_indices.csv')
         for i in range(len(df)):
             cities[df['City'][i]] = i
         return cities
@@ -44,7 +44,7 @@ class DataManager:
             return df.hour.astype('int').astype('str') + ':00:00'
 
         def getDataframe(split):
-            return pd.read_csv(f'{split}_data/{city}.csv')
+            return pd.read_csv(f'../{split}_data/{city}.csv')
         city = city.replace(' ', '_').lower()
         train_data = getDataframe('train')
         val_data = getDataframe('val')
@@ -67,7 +67,7 @@ class DataManager:
             X /= (std + 0.00001)
             return X
 
-        X = pd.read_csv(f'{split}_data/{city}.csv')['tempC'].values
+        X = pd.read_csv(f'../{split}_data/{city}.csv')['tempC'].values
         #X = normalize_data(X)
         return X
 
@@ -121,7 +121,7 @@ class DataManager:
         means = {}
         stds = {}
         for city in self.cities:
-            df = pd.read_csv(f'train_data/{city}.csv')
+            df = pd.read_csv(f'../train_data/{city}.csv')
             X = df.values
             mean_values = np.mean(X, axis=0)
             std_values = np.std(X, axis=0)

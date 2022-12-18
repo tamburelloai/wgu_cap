@@ -1,5 +1,4 @@
 import os
-os.chdir('../')
 import torch
 from data_utils.data_manager import DataManager
 from baseline_model.b_model import LinearRegression
