@@ -26,9 +26,12 @@ model = Transformer(inpt_features=1,
                     d_model=64,
                     nhead=8,
                     d_hid=64,
-                    nlayers=3).load_state_dict(torch.load('transformer_weights.pt'))
+                    nlayers=3)
 
-regressionModel = LinearRegression(24).load_state_dict(torch.load('baseline_weights.pt'))
+model.load_state_dict(torch.load('transformer_weights.pt'))
+
+regressionModel = LinearRegression(24)
+regressionModel.load_state_dict(torch.load('baseline_weights.pt'))
 
 handler = TorchTrainer(model,
                         batch_size=1,
