@@ -3,6 +3,7 @@ import time
 import torch.nn
 from matplotlib import pyplot as plt
 from tensor_utils import TensorUtils
+from pathlib import Path
 
 plt.ion()
 
@@ -15,7 +16,7 @@ class TorchTrainer:
         self.criterion = torch.nn.MSELoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), self.alpha)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 1.0, gamma=0.95)
-        self.PATH = 'model_state.pt'
+        self.PATH = Path(__file__).parent / 'model_state.pt'
         self.bptt = bptt
         self.device = 'cpu'
 
