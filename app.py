@@ -174,12 +174,12 @@ with tab2:
            go.Line(x=past, y=lastWeekActual, name="Last Week (Actual)", line={'dash': 'solid', 'color': 'blue'}),
 
            #transformer predictions
-           go.Line(x=past, y=lastWeekPrediction, name="Last Week (Prediction)", line={'dash': 'dash', 'color': 'red'}),
-           go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'dash', 'color': 'pink'}),
+           go.Line(x=past, y=lastWeekPrediction, name="Last Week (Prediction)", line={'dash': 'solid', 'color': 'red'}),
+           go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'solid', 'color': 'pink'}),
 
            # linear regression
-           go.Line(x=past, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'dash', 'color': 'yellow'}),
-           go.Line(x=future, y=tomorrowReg.reshape(-1), name='Future Forecast (Regression)', line={'dash': 'dash', 'color': 'gold'})
+           go.Line(x=past, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'solid', 'color': 'yellow'}),
+           go.Line(x=future, y=tomorrowReg.reshape(-1), name='Future Forecast (Regression)', line={'dash': 'solid', 'color': 'gold', 'width':'4'})
 
        ],
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"}, "title": f"Inference ({city_selected})"})
