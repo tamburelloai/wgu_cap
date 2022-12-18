@@ -27,7 +27,9 @@ class TorchTrainer:
         torch.save(self.model.state_dict(), self.PATH)
 
     def load_model(self):
-        self.model.load_state_dict(torch.load(' '.join(os.listdir())))
+        for x in os.listdir():
+            print(x)
+        self.model.load_state_dict(torch.load(self.PATH))
 
     def train_model(self, train_data):
         total_loss = 0.
