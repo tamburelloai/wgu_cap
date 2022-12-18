@@ -108,7 +108,7 @@ with tab1:
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"},
                "title": f"Historical ({city_selected})"}
     )
-    f1.update_layout(legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0))
+    f1.update_layout(legend=dict(yanchor="bottom", xanchor="left"))
     f1.update_layout(height=600)
 
 
