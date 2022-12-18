@@ -18,7 +18,7 @@ class TorchTrainer:
         self.criterion = torch.nn.MSELoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), self.alpha)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, 1.0, gamma=0.95)
-        self.PATH = 'model_state.pt'
+        self.PATH = 'model/model_state.pt'
         self.bptt = bptt
         self.device = 'cpu'
 
