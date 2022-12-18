@@ -101,9 +101,9 @@ with tab1:
 
     f1 = go.Figure(
        data=[
-           go.Line(x=xaxis, y=y, name="actual", line={'dash': 'solid', 'color':'rgba(0, 0, 255, 0.9)'}),
-           go.Line(x=xaxis, y=yhat, name="prediction", line={'dash': 'dash', 'color':'rgba(255, 0, 0, 0.7)'}),
-           go.Line(x=xaxis, y=yhat_baseline, name='baseline')
+           go.Line(x=xaxis, y=y, name="actual", line={'dash': 'solid', 'color':'rgba(0, 0, 255, 1)'}),
+           go.Line(x=xaxis, y=yhat, name="prediction", line={'dash': 'solid', 'color':'rgba(255, 0, 0, 0.5)'}),
+           go.Line(x=xaxis, y=yhat_baseline, name='baseline', 'color':'rgba(0, 255, 0, 0.5)')
        ],
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"},
                "title": f"Historical ({city_selected})"}
