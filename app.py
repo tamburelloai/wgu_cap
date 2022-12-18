@@ -117,12 +117,12 @@ with tab1:
     c1, c2 = st.columns(2)
     with c1:
         label = 'MSE (Transformer Model)'
-        value = int(np.mean((y-yhat)*(y-yhat)))
+        value = np.mean((y-yhat)*(y-yhat))
         st.metric(label, value, delta=None, delta_color="normal", help=None)
         
     with c2:
         label = 'MSE (Autogressive Model)'
-        value = int(np.mean(y))
+        value = np.mean((y-yhat_baseline)*(y-yhat_baseline))
         st.metric(label, value, delta=None, delta_color="normal", help=None)
 
 
