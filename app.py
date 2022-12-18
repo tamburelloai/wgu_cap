@@ -109,6 +109,7 @@ with tab1:
                "title": f"Historical ({city_selected})"}
     )
     f1.update_layout(legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0))
+    f1.update_layout(height=600)
 
 
     st.plotly_chart(f1)
