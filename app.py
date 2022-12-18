@@ -17,8 +17,6 @@ else:
     st.title('WeatherFormer')
 st.text('A transformer based weather prediction application')
 
-for x in os.listdir():
-    st.write(x + ' ')
 
 dm = DataManager()
 
