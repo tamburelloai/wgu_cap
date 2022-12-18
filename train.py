@@ -42,9 +42,9 @@ for outer_epoch in range(200):
 
         if i % 5 == 0:
             print('Model Saved')
-            trainer.save_model(verified=False)
+            trainer.save_model(verified=True)
 
-    trainer.save_model(verified=False)
+    trainer.save_model(verified=True)
 
 
 
