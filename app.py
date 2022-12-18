@@ -178,7 +178,7 @@ with tab2:
            go.Line(x=future, y=tomorrowPred, name='Future Forecast', line={'dash': 'dash', 'color': 'pink'}),
 
            # linear regression
-           go.Line(x=future, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'dash', 'color': 'yellow'}),
+           go.Line(x=past, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'dash', 'color': 'yellow'}),
            go.Line(x=future, y=tomorrowReg, name='Future Forecast (Regression)', line={'dash': 'dash', 'color': 'yellow'})
 
        ],
