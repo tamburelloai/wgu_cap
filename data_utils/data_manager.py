@@ -16,7 +16,7 @@ class DataManager:
     def getCities(self) -> Dict:
         '''returns list of city names read from cities directory'''
         cities = {}
-        df = pd.read_csv('../data_utils/city_indices.csv')
+        df = pd.read_csv('data_utils/city_indices.csv')
         for i in range(len(df)):
             cities[df['City'][i]] = i
         return cities
