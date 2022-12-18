@@ -179,7 +179,7 @@ with tab2:
 
            # linear regression
            go.Line(x=past, y=lastWeekReg, name='Last Week (Regression)', line={'dash': 'dash', 'color': 'yellow'}),
-           go.Line(x=future, y=tomorrowReg, name='Future Forecast (Regression)', line={'dash': 'dash', 'color': 'gold'})
+           go.Line(x=future, y=tomorrowReg.reshape(-1), name='Future Forecast (Regression)', line={'dash': 'dash', 'color': 'gold'})
 
        ],
        layout={"xaxis": {"title": "observations"}, "yaxis": {"title": "TEMPERATURE (F)"}, "title": f"Inference ({city_selected})"})
