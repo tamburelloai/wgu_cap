@@ -113,6 +113,17 @@ with tab1:
 
 
     st.plotly_chart(f1)
+    
+    c1, c2 = st.columns(2)
+    with c1:
+        label = 'MSE (Transformer Model)'
+        value = int(np.mean(y))
+        st.metric(label, value, delta=None, delta_color="normal", help=None)
+        
+    with c2:
+        label = 'MSE (Autogressive Model)'
+        value = int(np.mean(y))
+        st.metric(label, value, delta=None, delta_color="normal", help=None)
 
 
 with tab2:
